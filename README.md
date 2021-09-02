@@ -1,12 +1,15 @@
 # kspeak
 
-A Kotlin DSL for writing visual novel-like and cutscene scripts.
+A Kotlin DSL for writing visual novel-like and cutscene scripts. Ideal for Godot Kotlin/JVM.
 
 > :warning: This library is still under construction and needs proper documentation.
 
 ## Example
+You can use a Kotlin script to generate scripts using the DSL:
 
 ```kotlin
+
+import kspeak.*
 
 buildScene {
     version(1)

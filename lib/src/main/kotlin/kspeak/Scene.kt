@@ -8,6 +8,12 @@ import kotlinx.serialization.json.*
  *
  * A scriptable scene contains a list of parts that comprise of dialogue and branch blocks. These parts are built with
  * their own builders and are serializable to JSON.
+ *
+ * @see buildScene
+ *
+ * @property version The version of the script the scene is. Currently unused.
+ * @property parts The list of parts that comprise of the scene.
+ * @property outputPath The path to the JSON file that will be written to.
  */
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
@@ -32,7 +38,9 @@ class Scene(
         return Json.encodeToString(this)
     }
 
-    /** Set the version for the script. This is used to track compatibility.
+    /** Set the version for the script.
+     *
+     * This is used to track compatibility.
      *
      * @param newVersion The version of the script schema that is being used.
      */
@@ -50,14 +58,17 @@ class Scene(
         outputPath = path
     }
 
-    /** List the parts to make the scene. */
+    /** List the parts to make the scene.
+     *
+     * @param builder A closure that will generate the list of parts that the scene will comprise of.
+     */
     fun parts(builder: ScenePartBuilder.() -> Unit) {
         val scenePartBuilder = ScenePartBuilder()
         builder.invoke(scenePartBuilder)
         parts = scenePartBuilder
     }
 
-    /** Write the scene to a serialized JSON file. */
+    /** Write the scene to a serialized JSON file, if possible. */
     @OptIn(ExperimentalSerializationApi::class)
     fun write() {
         if (outputPath.isEmpty()) return
@@ -71,7 +82,11 @@ class Scene(
 
 }
 
-/** Build a scene from its parts. */
+/** Build a scene from its parts. This is the common entry point for creating a scene by hand.
+ *
+ * @see Scene
+ * @param builder A closure that will build the scene
+ */
 fun buildScene(builder: Scene.() -> Unit): Scene {
     val newScene = Scene()
     builder.invoke(newScene)
