@@ -8,11 +8,14 @@
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.5.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.20"
+    id("org.jetbrains.kotlin.jvm") version "1.4.32"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.32"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+
+    // Add to publish to GitHub
+    `maven-publish`
 }
 
 repositories {
@@ -41,4 +44,26 @@ dependencies {
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api("org.apache.commons:commons-math3:3.6.1")
+
+    // Add scripting runtime to tests.
+    testImplementation(kotlin("script-runtime"))
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/alicerunsonfedora/kspeak")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
 }
