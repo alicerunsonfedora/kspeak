@@ -1,6 +1,20 @@
+/*
+ * (C) 2021 Marquis Kurt.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * (C) 2021 Marquis Kurt.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package kspeak
 
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 
 /** A data class that represents a part of a scene.
  *
@@ -25,6 +39,7 @@ data class ScenePart(
     enum class Kind {
         /** A block of dialogue. */
         DIALOGUE,
+
         /** A decision branch containing options. */
         BRANCH
     }
