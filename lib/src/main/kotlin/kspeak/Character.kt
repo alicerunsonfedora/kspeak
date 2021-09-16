@@ -29,13 +29,21 @@ package kspeak
  * @property name The name of the character. This can also be retrieved via `Character.toString()`.
  *
  */
-class Character(private val name: String) {
+class Character(private var name: String) {
 
     /** Retrieves the character's name.
      *
      * @see name
      */
     override fun toString(): String = name
+
+    /** Rename the character to a different name.
+     *
+     * @param newName The new name to assign to the character.
+     */
+    fun rename(newName: String) {
+        name = newName
+    }
 
     /** Have the character speak a line, with optional imagery.
      *

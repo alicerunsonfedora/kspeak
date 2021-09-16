@@ -26,7 +26,9 @@ data class ScenePart(
     val kind: Kind,
     val dialogue: ArrayList<DialoguePart>? = null,
     val branch: ArrayList<Option>? = null,
-    val options: Map<String, String> = emptyMap()) {
+    val imageChangeRequest: ImageChangeRequest? = null,
+    val options: Map<String, String> = emptyMap()
+) {
 
     /** An enumeration for the different kinds of parts a ScenePart can be. */
     enum class Kind {
@@ -34,7 +36,10 @@ data class ScenePart(
         DIALOGUE,
 
         /** A decision branch containing options. */
-        BRANCH
+        BRANCH,
+
+        /** A command to change either the background image or the sprite image. */
+        IMAGE_CHANGE
     }
 }
 
@@ -44,24 +49,17 @@ data class ScenePart(
  */
 class ScenePartBuilder: ArrayList<ScenePart>() {
 
-    /** Generate a dialogue scene part.
+    /** Change the background image of a scene.
      *
-     * Example:
-     * ```
-     * val angi = Character(...)
-     * dialogue() {
-     *  narrate("I slowly find myself unable to write the next line of text.")
-     *  line(angi.speak("What's the matter? You're not able to finish?"))
-     * }
-     * ```
-     *
-     * @param builder A closure that will construct the dialogue for this part.
+     * @param backgroundPath The path to the image to use as the background.
      */
-    fun dialogue(builder: DialogueBuilder.() -> Unit) {
-        val dialogueBuilder = DialogueBuilder()
-        builder.invoke(dialogueBuilder)
-        val dialogueUnit = ScenePart(ScenePart.Kind.DIALOGUE, dialogue = dialogueBuilder)
-        add(dialogueUnit)
+    fun background(backgroundPath: String) {
+        add(
+            ScenePart(
+                ScenePart.Kind.IMAGE_CHANGE,
+                imageChangeRequest = ImageChangeRequest(backgroundPath, "")
+            )
+        )
     }
 
     /** Generate a decision branch scene part.
@@ -84,6 +82,39 @@ class ScenePartBuilder: ArrayList<ScenePart>() {
         val options = OptionBuilder()
         builder.invoke(options)
         add(ScenePart(ScenePart.Kind.BRANCH, branch = options, options = mapOf("waitForAll" to "$waitForAll")))
+    }
+
+    /** Generate a dialogue scene part.
+     *
+     * Example:
+     * ```
+     * val angi = Character(...)
+     * dialogue() {
+     *  narrate("I slowly find myself unable to write the next line of text.")
+     *  line(angi.speak("What's the matter? You're not able to finish?"))
+     * }
+     * ```
+     *
+     * @param builder A closure that will construct the dialogue for this part.
+     */
+    fun dialogue(builder: DialogueBuilder.() -> Unit) {
+        val dialogueBuilder = DialogueBuilder()
+        builder.invoke(dialogueBuilder)
+        val dialogueUnit = ScenePart(ScenePart.Kind.DIALOGUE, dialogue = dialogueBuilder)
+        add(dialogueUnit)
+    }
+
+    /** Change the sprite image on top of the background.
+     *
+     * @param spritePath The path to the sprite image to use.
+     */
+    fun sprite(spritePath: String) {
+        add(
+            ScenePart(
+                ScenePart.Kind.IMAGE_CHANGE,
+                imageChangeRequest = ImageChangeRequest("", spritePath)
+            )
+        )
     }
 
 }
